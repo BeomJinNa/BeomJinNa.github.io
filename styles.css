@@ -264,7 +264,7 @@ p {
 
 .visual-frame {
   overflow: hidden;
-  margin-bottom: 0;
+  margin: 0;
   border: 1px solid #252c2e;
   border-radius: var(--radius);
   background: #090b0c;
@@ -276,7 +276,8 @@ p {
 
 .carousel-stage {
   position: relative;
-  aspect-ratio: 3224 / 2280;
+  --carousel-caption-height: 32px;
+  aspect-ratio: 4 / 3;
   background: #090b0c;
 }
 
@@ -298,7 +299,7 @@ p {
 
 .carousel-slide a {
   display: block;
-  height: calc(100% - 32px);
+  height: calc(100% - var(--carousel-caption-height));
   cursor: zoom-in;
 }
 
@@ -325,17 +326,20 @@ p {
 }
 
 .visual-frame figcaption {
-  min-height: 32px;
+  display: flex;
+  height: var(--carousel-caption-height);
+  align-items: center;
   padding: 7px 10px;
   color: #b5bdbe;
   background: #171c1e;
   font-size: 0.67rem;
+  line-height: 1.35;
 }
 
 .carousel-control {
   position: absolute;
   z-index: 2;
-  top: calc(50% - 16px);
+  top: calc(50% - (var(--carousel-caption-height) / 2));
   display: grid;
   width: 40px;
   height: 40px;
@@ -438,7 +442,7 @@ p {
 }
 
 .video-frame video {
-  height: calc(100% - 32px);
+  height: calc(100% - var(--carousel-caption-height));
   object-fit: contain;
 }
 
@@ -584,6 +588,11 @@ p {
 
   .project-header h3 {
     font-size: 1.35rem;
+  }
+
+  .carousel-stage {
+    --carousel-caption-height: 48px;
+    aspect-ratio: 6 / 5;
   }
 
   .footer-content {
