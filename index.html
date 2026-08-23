@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Beomjin Na의 C/C++ 그래픽스 프로그래밍 포트폴리오">
+  <title>Beomjin Na · Graphics Programming</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">본문으로 이동</a>
+
+  <div class="site-shell">
+    <aside class="site-rail" aria-label="프로필과 페이지 탐색">
+      <div class="identity">
+        <a class="name" href="#top">Beomjin Na</a>
+        <p>C / C++ Graphics<br>Programming</p>
+      </div>
+
+      <nav class="site-nav" aria-label="페이지 목차">
+        <a href="#minirt"><span>01</span>miniRT</a>
+        <a href="#fdf"><span>02</span>FdF</a>
+      </nav>
+
+      <div class="rail-links">
+        <a href="mailto:bjinn94@gmail.com">Email</a>
+        <a href="https://github.com/BeomJinNa" target="_blank" rel="noreferrer">GitHub</a>
+      </div>
+    </aside>
+
+    <main id="content">
+      <header class="hero content-width" id="top">
+        <p class="section-label">Portfolio · 2026</p>
+        <h1>C와 C++로 구현한 그래픽스 프로젝트를 정리했습니다.</h1>
+        <p class="hero-copy">Ray tracing과 wireframe rasterization을 직접 구현하며 장면 데이터가 화면 결과로 이어지는 과정을 다뤘습니다.</p>
+      </header>
+
+      <section class="work-section" aria-labelledby="earlier-work-title">
+        <div class="content-width">
+          <div class="section-heading compact-heading">
+            <p class="section-label">Graphics Work</p>
+            <h2 id="earlier-work-title">C로 구현한 렌더링 프로젝트</h2>
+          </div>
+        </div>
+
+        <article class="project-band content-width" id="minirt">
+          <header class="project-header">
+            <div>
+              <p class="project-number">01</p>
+              <h3>miniRT</h3>
+            </div>
+            <p class="project-stack">C · CPU Ray Tracing · k-d Tree</p>
+          </header>
+
+          <div class="media-carousel" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="miniRT 렌더링 결과">
+            <div class="carousel-stage">
+              <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+                <a href="assets/media/minirt-scene-04.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기">
+                  <img src="assets/media/minirt-scene-04.webp" alt="miniRT가 렌더링한 여러 반사 구와 조명 장면" loading="lazy" decoding="async">
+                </a>
+                <figcaption>Recursive ray path, direct lighting and reflective materials</figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                <a href="assets/media/minirt-scene-05.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                  <img src="assets/media/minirt-scene-05.webp" alt="다수의 cylinder와 여러 색상의 조명이 배치된 miniRT 장면" loading="lazy" decoding="async">
+                </a>
+                <figcaption>Dense cylinder scene with multiple colored lights</figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide carousel-slide-diagnostic" data-carousel-slide aria-hidden="true">
+                <a href="assets/media/minirt-kdtree.png" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                  <img src="assets/media/minirt-kdtree.png" alt="miniRT k-d tree의 노드 깊이와 leaf 구성을 출력한 진단 화면" loading="lazy" decoding="async">
+                </a>
+                <figcaption>k-d tree build output: node depth and leaf distribution</figcaption>
+              </figure>
+
+              <button class="carousel-control carousel-control-previous" type="button" data-carousel-previous aria-label="이전 이미지" title="이전 이미지">
+                <span aria-hidden="true">←</span>
+              </button>
+              <button class="carousel-control carousel-control-next" type="button" data-carousel-next aria-label="다음 이미지" title="다음 이미지">
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
+
+            <div class="carousel-navigation">
+              <span class="carousel-counter" data-carousel-counter aria-live="polite">01 / 03</span>
+              <div class="carousel-dots" role="group" aria-label="miniRT 이미지 선택">
+                <button type="button" data-carousel-dot aria-label="첫 번째 이미지 보기" aria-current="true"></button>
+                <button type="button" data-carousel-dot aria-label="두 번째 이미지 보기"></button>
+                <button type="button" data-carousel-dot aria-label="세 번째 이미지 보기"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-description">
+            <p>C로 작성한 CPU ray tracer입니다. Sphere·plane·cylinder 교차, shadow ray와 재귀 반사를 구현하고 AABB pruning을 사용하는 k-d tree로 장면 공간을 분할했습니다.</p>
+            <div class="source-links" aria-label="miniRT 선별 소스 링크">
+              <a href="https://github.com/BeomJinNa/42cursus/tree/main/common_core/circle4_miniRT" target="_blank" rel="noreferrer">Project source</a>
+              <a href="https://github.com/BeomJinNa/42cursus/blob/main/common_core/circle4_miniRT/srcs/kd_tree/traverse_tree.c" target="_blank" rel="noreferrer">Tree traversal</a>
+            </div>
+          </div>
+
+        </article>
+
+        <article class="project-band content-width" id="fdf">
+          <header class="project-header">
+            <div>
+              <p class="project-number">02</p>
+              <h3>FdF</h3>
+            </div>
+            <p class="project-stack">C · Line Rasterization · View Transform</p>
+          </header>
+
+          <div class="media-carousel fdf-carousel" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="FdF 실행 영상과 렌더링 결과">
+            <div class="carousel-stage">
+              <figure class="visual-frame video-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+                <video data-loop-video autoplay muted loop playsinline controls preload="metadata" poster="assets/media/fdf-poster.webp" aria-label="FdF Julia height map을 회전하며 보여주는 8초 영상">
+                  <source src="assets/media/fdf-demo.mp4" type="video/mp4">
+                  브라우저가 MP4 영상을 지원하지 않습니다.
+                </video>
+                <figcaption>8-second Julia height-map interaction capture</figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                <a href="assets/media/fdf-scene-01.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                  <img src="assets/media/fdf-scene-01.webp" alt="숫자 42 형태의 height map을 와이어프레임으로 표현한 FdF 장면" loading="lazy" decoding="async">
+                </a>
+                <figcaption>42 height-map projection</figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                <a href="assets/media/fdf-scene-02.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                  <img src="assets/media/fdf-scene-02.webp" alt="조밀한 흰색 와이어프레임으로 표현한 FdF 지형 장면" loading="lazy" decoding="async">
+                </a>
+                <figcaption>Dense terrain wireframe</figcaption>
+              </figure>
+
+              <button class="carousel-control carousel-control-previous" type="button" data-carousel-previous aria-label="이전 미디어" title="이전 미디어">
+                <span aria-hidden="true">←</span>
+              </button>
+              <button class="carousel-control carousel-control-next" type="button" data-carousel-next aria-label="다음 미디어" title="다음 미디어">
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
+
+            <div class="carousel-navigation">
+              <span class="carousel-counter" data-carousel-counter aria-live="polite">01 / 03</span>
+              <div class="carousel-dots" role="group" aria-label="FdF 미디어 선택">
+                <button type="button" data-carousel-dot aria-label="FdF 영상 보기" aria-current="true"></button>
+                <button type="button" data-carousel-dot aria-label="FdF 첫 번째 이미지 보기"></button>
+                <button type="button" data-carousel-dot aria-label="FdF 두 번째 이미지 보기"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-description">
+            <p>Height map을 3차원 와이어프레임 지형으로 변환하는 작은 렌더러입니다. 투영 basis, 시점 회전과 확대·축소, 선 rasterization과 endpoint 색상 보간을 직접 다뤘습니다.</p>
+            <div class="source-links" aria-label="FdF 선별 소스 링크">
+              <a href="https://github.com/BeomJinNa/42cursus/tree/main/common_core/circle2_FdF" target="_blank" rel="noreferrer">Project source</a>
+              <a href="https://github.com/BeomJinNa/42cursus/blob/main/common_core/circle2_FdF/srcs/run_mlx/draw_lines.c" target="_blank" rel="noreferrer">Line rasterization</a>
+            </div>
+          </div>
+
+        </article>
+      </section>
+
+      <footer class="site-footer">
+        <div class="content-width footer-content">
+          <div>
+            <strong>Beomjin Na</strong>
+            <p>C++ Realtime Graphics · Rendering Systems</p>
+          </div>
+          <div class="footer-links">
+            <a href="mailto:bjinn94@gmail.com">bjinn94@gmail.com</a>
+            <a href="https://github.com/BeomJinNa" target="_blank" rel="noreferrer">github.com/BeomJinNa</a>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
