@@ -336,6 +336,15 @@ p {
   line-height: 1.35;
 }
 
+.project-video-frame {
+  --carousel-caption-height: 32px;
+}
+
+.project-video-frame video {
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+}
+
 .carousel-control {
   position: absolute;
   z-index: 2;
@@ -427,6 +436,40 @@ p {
   margin-bottom: 0;
 }
 
+.featured-description > p {
+  max-width: 880px;
+}
+
+.project-highlights {
+  display: grid;
+  margin: 28px 0 0;
+  padding: 24px 0 0;
+  border-top: 1px solid var(--line);
+  gap: 28px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+}
+
+.project-highlights strong,
+.project-highlights span {
+  display: block;
+}
+
+.project-highlights strong {
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 760;
+}
+
+.project-highlights span {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.58;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+
 .source-links {
   display: flex;
   flex-wrap: wrap;
@@ -486,6 +529,11 @@ p {
 
   .content-width {
     width: min(calc(100% - 48px), var(--content-width));
+  }
+
+  .project-highlights {
+    gap: 16px;
+    grid-template-columns: 1fr;
   }
 
 }
@@ -593,6 +641,10 @@ p {
   .carousel-stage {
     --carousel-caption-height: 48px;
     aspect-ratio: 6 / 5;
+  }
+
+  .project-video-frame {
+    --carousel-caption-height: 48px;
   }
 
   .footer-content {

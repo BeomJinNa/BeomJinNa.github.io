@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Beomjin Na의 C/C++ 그래픽스 프로그래밍 포트폴리오">
-  <title>Beomjin Na · Graphics Programming</title>
+  <meta name="description" content="Beomjin Na의 C++ 실시간 렌더링 및 그래픽스 프로그래밍 포트폴리오">
+  <title>Beomjin Na · Realtime Graphics</title>
   <link rel="stylesheet" href="styles.css">
   <script src="site.js" defer></script>
 </head>
@@ -15,12 +15,13 @@
     <aside class="site-rail" aria-label="프로필과 페이지 탐색">
       <div class="identity">
         <a class="name" href="#top">Beomjin Na</a>
-        <p>C / C++ Graphics<br>Programming</p>
+        <p>C++ Realtime Graphics<br>Rendering Systems</p>
       </div>
 
       <nav class="site-nav" aria-label="페이지 목차">
-        <a href="#minirt"><span>01</span>miniRT</a>
-        <a href="#fdf"><span>02</span>FdF</a>
+        <a href="#tinyrenderer"><span>01</span>Rendering Engine</a>
+        <a href="#minirt"><span>02</span>miniRT</a>
+        <a href="#fdf"><span>03</span>FdF</a>
       </nav>
 
       <div class="rail-links">
@@ -32,22 +33,59 @@
     <main id="content">
       <header class="hero content-width" id="top">
         <p class="section-label">Portfolio · 2026</p>
-        <h1>C와 C++로 구현한 그래픽스 프로젝트를 정리했습니다.</h1>
-        <p class="hero-copy">Ray tracing과 wireframe rasterization을 직접 구현하며 장면 데이터가 화면 결과로 이어지는 과정을 다뤘습니다.</p>
+        <h1>C와 C++로 그래픽스 시스템을 설계하고 구현했습니다.</h1>
+        <p class="hero-copy">DirectX 12 실시간 렌더링 엔진을 중심으로, CPU ray tracing과 wireframe rasterization까지 장면 데이터가 화면 결과로 이어지는 과정을 다뤘습니다.</p>
       </header>
 
       <section class="work-section" aria-labelledby="earlier-work-title">
         <div class="content-width">
           <div class="section-heading compact-heading">
-            <p class="section-label">Graphics Work</p>
-            <h2 id="earlier-work-title">C로 구현한 렌더링 프로젝트</h2>
+            <p class="section-label">Selected Work</p>
+            <h2 id="earlier-work-title">실시간 렌더링 엔진과 그래픽스 프로젝트</h2>
           </div>
         </div>
+
+        <article class="project-band content-width featured-project" id="tinyrenderer">
+          <header class="project-header">
+            <div>
+              <p class="project-number">01</p>
+              <h3>Realtime Rendering Engine</h3>
+            </div>
+            <p class="project-stack">TinyRenderer · C++20 · DirectX 12</p>
+          </header>
+
+          <figure class="visual-frame project-video-frame">
+            <video data-loop-video autoplay muted loop playsinline controls preload="metadata" poster="assets/media/tinyrenderer-poster.webp" aria-label="TinyRenderer의 Bistro 장면 렌더링, 애니메이션, 그림자와 BVH 진단 영상">
+              <source src="assets/media/tinyrenderer-demo.mp4" type="video/mp4">
+              브라우저가 MP4 영상을 지원하지 않습니다.
+            </video>
+            <figcaption>Bistro scene: rendering modes, animation, shadows and BVH diagnostics</figcaption>
+          </figure>
+
+          <div class="project-description featured-description">
+            <p>C++20과 DirectX 12로 구현한 실시간 렌더링 엔진입니다. 에셋 데이터를 런타임 장면과 GPU 자원으로 연결하는 전체 흐름을 구성하고, 명시적 그래픽스 API의 자원 수명과 동기화 문제를 엔진 구조 안에서 해결했습니다.</p>
+          </div>
+
+          <ul class="project-highlights" aria-label="TinyRenderer 핵심 구현">
+            <li>
+              <strong>Architecture</strong>
+              <span>RHI(Rendering Hardware Interface) 계층과 DirectX 12 백엔드, GPU 자원 수명·Command Queue 동기화·Descriptor/Pipeline 관리</span>
+            </li>
+            <li>
+              <strong>Rendering</strong>
+              <span>Forward/Deferred PBR, IBL, Directional Shadow, SSAO/GTAO, glTF 애니메이션과 GPU Skinning</span>
+            </li>
+            <li>
+              <strong>Performance</strong>
+              <span>Bistro 장면의 렌더링 객체 1,592개에 HZB 기반 Occlusion Culling을 적용했습니다. Geometry pass는 6.09ms → 4.85ms (-20.4%), Culling pass는 평균 0.24ms였습니다.</span>
+            </li>
+          </ul>
+        </article>
 
         <article class="project-band content-width" id="minirt">
           <header class="project-header">
             <div>
-              <p class="project-number">01</p>
+              <p class="project-number">02</p>
               <h3>miniRT</h3>
             </div>
             <p class="project-stack">C · CPU Ray Tracing · k-d Tree</p>
@@ -105,7 +143,7 @@
         <article class="project-band content-width" id="fdf">
           <header class="project-header">
             <div>
-              <p class="project-number">02</p>
+              <p class="project-number">03</p>
               <h3>FdF</h3>
             </div>
             <p class="project-stack">C · Line Rasterization · View Transform</p>
