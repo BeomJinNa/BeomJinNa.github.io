@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="TinyRenderer의 렌더링 구조, RHI, shadow, ambient occlusion, BVH와 HZB 구현 결과">
+  <title>TinyRenderer · Technical Details</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="engine-detail.css">
+  <script src="../../site.js" defer></script>
+</head>
+<body class="detail-page">
+  <a class="skip-link" href="#content">본문으로 이동</a>
+
+  <header class="detail-topbar">
+    <div class="detail-topbar-inner">
+      <a class="portfolio-return" href="../../#tinyrenderer" aria-label="포트폴리오의 TinyRenderer 소개로 돌아가기">
+        <span aria-hidden="true">←</span>
+        <span>Selected work</span>
+      </a>
+      <a class="detail-owner" href="../../">Beomjin Na</a>
+    </div>
+  </header>
+
+  <main id="content">
+    <section class="detail-intro" id="top">
+      <header class="detail-hero content-width">
+        <p class="detail-kicker">Realtime rendering engine</p>
+        <h1>TinyRenderer</h1>
+        <p class="detail-subtitle">C++20과 DirectX 12로 구현한 개인 렌더링 엔진</p>
+        <p class="hero-copy">장면과 에셋을 준비하고 렌더 패스를 구성한 뒤, RHI를 거쳐 GPU 명령을 실행하는 렌더링 흐름을 구현했습니다.</p>
+
+        <ul class="detail-meta" aria-label="프로젝트 기본 정보">
+          <li>C++20 · HLSL</li>
+          <li>DirectX 12</li>
+          <li>Personal project</li>
+        </ul>
+      </header>
+
+      <figure class="detail-result-figure content-width">
+        <a href="../../assets/media/tinyrenderer-main.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기">
+          <img src="../../assets/media/tinyrenderer-main.webp" alt="TinyRenderer로 렌더링한 Bistro 거리와 중앙의 나무 장면" width="1600" height="900" decoding="async" fetchpriority="high">
+        </a>
+      </figure>
+    </section>
+
+    <section class="detail-section scope-section" id="scope" aria-labelledby="scope-title">
+      <div class="content-width">
+        <header class="detail-section-heading">
+          <p class="detail-index">Scope</p>
+          <div>
+            <h2 id="scope-title">구현 범위</h2>
+          </div>
+        </header>
+
+        <dl class="scope-ledger">
+          <div>
+            <dt>엔진 코어</dt>
+            <dd>장면과 에셋 관리, 렌더 패스 구성, GPU 명령 기록과 성능 측정을 구현했습니다.</dd>
+          </div>
+          <div>
+            <dt>RHI 계층</dt>
+            <dd>현재는 DirectX 12 백엔드를 사용하며, Vulkan 백엔드 확장을 고려해 렌더링 코드와 그래픽스 API 구현부 사이에 공통 자원과 명령 인터페이스를 두었습니다.</dd>
+          </div>
+          <div>
+            <dt>외부 라이브러리</dt>
+            <dd>tinygltf·Assimp·DirectXTex는 모델과 이미지 파일을 읽는 데 사용하며, 읽어온 데이터는 엔진 전용 중간 데이터로 변환해 에셋 관리와 렌더링에 사용합니다.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <nav class="detail-toc content-width" aria-label="상세 페이지 목차">
+      <span class="detail-toc-label">Contents</span>
+      <div class="detail-toc-links">
+        <a href="#architecture">Architecture</a>
+        <a href="#rendering">Rendering</a>
+      </div>
+    </nav>
+
+      <section class="detail-section" id="architecture" aria-labelledby="architecture-title">
+        <div class="content-width">
+          <header class="detail-section-heading">
+            <p class="detail-index">Architecture</p>
+            <div>
+              <h2 id="architecture-title">엔진의 한 프레임 렌더링 경로</h2>
+            </div>
+          </header>
+
+          <figure class="engine-overview" aria-label="동일 계층의 장면 상태와 엔진 에셋이 프레임 준비, 렌더 파이프라인, RHI와 DirectX 12 백엔드를 거쳐 GPU에서 실행되는 한 프레임의 렌더링 경로">
+            <div class="overview-input-group">
+              <div class="overview-input-role">
+                <span>Frame inputs</span>
+                <strong>동일 계층의 입력</strong>
+              </div>
+
+              <div class="overview-inputs">
+                <section class="overview-lane" aria-label="장면 상태">
+                  <span class="map-label">Scene</span>
+                  <div class="overview-node overview-node-primary">
+                    <strong>장면 상태</strong>
+                    <span>카메라 · 오브젝트<br>조명 · 애니메이션</span>
+                  </div>
+                </section>
+
+                <section class="overview-lane" aria-label="엔진 에셋">
+                  <span class="map-label">Assets</span>
+                  <div class="overview-node overview-node-primary">
+                    <strong>엔진 에셋</strong>
+                    <span>모델 · 텍스처<br>머터리얼 · 셰이더</span>
+                  </div>
+                </section>
+              </div>
+            </div>
+
+            <div class="overview-merge" aria-hidden="true">
+              <span></span>
+              <i>↓</i>
+              <span></span>
+            </div>
+
+            <div class="overview-stack">
+              <div class="overview-stage overview-stage-primary">
+                <span class="stage-level">Frame preparation</span>
+                <strong>장면 상태와 에셋 참조를 현재 프레임에 반영</strong>
+                <small>카메라 · 오브젝트 변환 · 조명 · 애니메이션 결과 갱신</small>
+              </div>
+              <i aria-hidden="true">↓</i>
+              <div class="overview-stage">
+                <span class="stage-level">Render pipeline</span>
+                <strong>활성 렌더 패스가 draw와 dispatch 작업을 구성</strong>
+                <small>렌더 패스 순서 · 가시성 판정 · 머터리얼과 파이프라인 연결</small>
+              </div>
+              <i aria-hidden="true">↓</i>
+              <div class="overview-stage">
+                <span class="stage-level">RHI</span>
+                <strong>자원과 파이프라인을 바인딩하고 공통 명령을 기록</strong>
+                <small>draw · dispatch · copy · 자원 상태 전환</small>
+              </div>
+              <i aria-hidden="true">↓</i>
+              <div class="overview-stage">
+                <span class="stage-level">DirectX 12 backend</span>
+                <strong>RHI 작업을 DirectX 12 명령으로 변환해 제출</strong>
+                <small>Command List 기록 · Queue 제출 · 동기화</small>
+              </div>
+              <i aria-hidden="true">↓</i>
+              <div class="overview-stage">
+                <span class="stage-level">GPU</span>
+                <strong>제출된 명령을 실행하고 렌더링 결과를 생성</strong>
+                <small>graphics · compute · copy 작업 실행</small>
+              </div>
+              <i aria-hidden="true">↓</i>
+              <div class="overview-stage overview-stage-output">
+                <span class="stage-level">Frame completion</span>
+                <strong>화면을 출력하고 완료된 GPU 작업을 정리</strong>
+                <small>Present · 완료 상태 확인 · 임시 자원 회수</small>
+              </div>
+            </div>
+          </figure>
+        </div>
+      </section>
+
+      <section class="detail-section" id="rendering" aria-labelledby="rendering-title">
+        <div class="content-width">
+          <header class="detail-section-heading">
+            <p class="detail-index">Rendering</p>
+            <div>
+              <h2 id="rendering-title">렌더링 기능과 진단</h2>
+            </div>
+          </header>
+
+          <div class="rendering-list">
+            <article class="rendering-feature" aria-labelledby="shadow-title">
+              <header class="rendering-feature-heading">
+                <p>01 · Shadow</p>
+                <h3 id="shadow-title">Directional shadow filtering</h3>
+              </header>
+
+              <div class="media-carousel evidence-carousel feature-media" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="Directional shadow 필터링 비교">
+                <div class="carousel-stage">
+                  <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+                    <a href="../../assets/media/tinyrenderer-shadow-raw.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기">
+                      <img src="../../assets/media/tinyrenderer-shadow-raw.webp" alt="필터링하지 않은 directional shadow 경계" width="1600" height="900" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <strong>Hard shadow</strong>
+                      <span>Shadow map의 단일 depth 비교 결과</span>
+                    </figcaption>
+                  </figure>
+
+                  <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                    <a href="../../assets/media/tinyrenderer-shadow-pcf33.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                      <img src="../../assets/media/tinyrenderer-shadow-pcf33.webp" alt="3×3 PCF를 적용해 부드러워진 directional shadow 경계" width="1600" height="900" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <strong>3×3 PCF</strong>
+                      <span>주변 depth 비교 결과를 평균한 shadow 경계</span>
+                    </figcaption>
+                  </figure>
+
+                  <button class="carousel-control carousel-control-previous" type="button" data-carousel-previous aria-label="이전 shadow 이미지" title="이전 shadow 이미지">
+                    <span aria-hidden="true">←</span>
+                  </button>
+                  <button class="carousel-control carousel-control-next" type="button" data-carousel-next aria-label="다음 shadow 이미지" title="다음 shadow 이미지">
+                    <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+
+                <div class="carousel-navigation">
+                  <span class="carousel-counter" data-carousel-counter aria-live="polite">01 / 02</span>
+                  <div class="carousel-dots" role="group" aria-label="Shadow 이미지 선택">
+                    <button type="button" data-carousel-dot aria-label="Hard shadow 보기" aria-current="true"></button>
+                    <button type="button" data-carousel-dot aria-label="3×3 PCF 보기"></button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="rendering-feature" aria-labelledby="ao-title">
+              <header class="rendering-feature-heading">
+                <p>02 · Ambient occlusion</p>
+                <h3 id="ao-title">SSAO / GTAO comparison</h3>
+              </header>
+
+              <div class="media-carousel evidence-carousel feature-media" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="Ambient occlusion 비교">
+                <div class="carousel-stage">
+                  <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+                    <a href="../../assets/media/tinyrenderer-ao-none.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기">
+                      <img src="../../assets/media/tinyrenderer-ao-none.webp" alt="Ambient occlusion을 적용하지 않고 directional shadow만 사용한 기준 장면" width="1600" height="900" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <strong>Shadow only</strong>
+                      <span>Ambient occlusion을 적용하지 않은 기준 장면</span>
+                    </figcaption>
+                  </figure>
+
+                  <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                    <a href="../../assets/media/tinyrenderer-ao-ssao.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                      <img src="../../assets/media/tinyrenderer-ao-ssao.webp" alt="SSAO를 적용한 Bistro 건물 장면" width="1600" height="900" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <strong>SSAO</strong>
+                      <span>화면 공간의 depth와 normal을 이용한 차폐 결과</span>
+                    </figcaption>
+                  </figure>
+
+                  <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                    <a href="../../assets/media/tinyrenderer-ao-gtao.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                      <img src="../../assets/media/tinyrenderer-ao-gtao.webp" alt="GTAO를 적용한 Bistro 건물 장면" width="1600" height="900" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption>
+                      <strong>GTAO</strong>
+                      <span>화면 공간 horizon 탐색을 이용한 차폐 결과</span>
+                    </figcaption>
+                  </figure>
+
+                  <button class="carousel-control carousel-control-previous" type="button" data-carousel-previous aria-label="이전 ambient occlusion 이미지" title="이전 ambient occlusion 이미지">
+                    <span aria-hidden="true">←</span>
+                  </button>
+                  <button class="carousel-control carousel-control-next" type="button" data-carousel-next aria-label="다음 ambient occlusion 이미지" title="다음 ambient occlusion 이미지">
+                    <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+
+                <div class="carousel-navigation">
+                  <span class="carousel-counter" data-carousel-counter aria-live="polite">01 / 03</span>
+                  <div class="carousel-dots" role="group" aria-label="Ambient occlusion 이미지 선택">
+                    <button type="button" data-carousel-dot aria-label="AO 미적용 장면 보기" aria-current="true"></button>
+                    <button type="button" data-carousel-dot aria-label="SSAO 보기"></button>
+                    <button type="button" data-carousel-dot aria-label="GTAO 보기"></button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="rendering-feature" aria-labelledby="bvh-title">
+              <header class="rendering-feature-heading">
+                <p>03 · Spatial structure</p>
+                <h3 id="bvh-title">binned-SAH BVH visualization</h3>
+              </header>
+
+              <figure class="visual-frame feature-media feature-video">
+                <video src="../../assets/media/tinyrenderer-bvh-build-5x.mp4" poster="../../assets/media/tinyrenderer-bvh-build-poster.webp" autoplay muted loop playsinline preload="metadata" data-loop-video aria-label="BVH 깊이에 따라 AABB 계층이 추가되는 과정"></video>
+                <figcaption>
+                  <strong>BVH hierarchy</strong>
+                  <span>BVH 깊이에 따른 AABB 계층 시각화 · 5×</span>
+                </figcaption>
+              </figure>
+            </article>
+
+            <article class="rendering-feature" aria-labelledby="hzb-title">
+              <header class="rendering-feature-heading">
+                <p>04 · Visibility</p>
+                <h3 id="hzb-title">GPU visibility culling A/B</h3>
+              </header>
+
+              <div class="hzb-layout">
+                <div>
+                  <table class="metric-table">
+                    <caption>Bistro · 1,592 RenderItems · 동일 workload</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">GPU 구간</th>
+                        <th scope="col">적용 전</th>
+                        <th scope="col">적용 후</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">Geometry pass</th>
+                        <td>6.09 ms</td>
+                        <td><strong>4.85 ms</strong></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">GPU visibility pass</th>
+                        <td>—</td>
+                        <td>0.24 ms</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p class="metric-result"><strong>Geometry pass -20.4%</strong><span>Frustum + HZB visibility pass 비용은 별도 구간으로 함께 표시</span></p>
+                </div>
+
+                <div class="media-carousel evidence-carousel" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="GPU visibility 컬링 진단 이미지 비교">
+                  <div class="carousel-stage">
+                    <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+                      <a href="../../assets/media/tinyrenderer-culling-reference.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기">
+                        <img src="../../assets/media/tinyrenderer-culling-reference.webp" alt="Observer view에서 메인 카메라 frustum과 전체 Bistro 장면을 함께 표시한 기준 이미지" width="1600" height="900" loading="lazy" decoding="async">
+                      </a>
+                      <figcaption>
+                        <strong>Reference view</strong>
+                        <span>Observer camera에서 확인한 main camera frustum과 기준 장면</span>
+                      </figcaption>
+                    </figure>
+
+                    <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                      <a href="../../assets/media/tinyrenderer-culling-result.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                        <img src="../../assets/media/tinyrenderer-culling-result.webp" alt="Observer view에서 frustum과 HZB visibility 판정을 적용한 Bistro 장면" width="1600" height="900" loading="lazy" decoding="async">
+                      </a>
+                      <figcaption>
+                        <strong>GPU visibility result</strong>
+                        <span>Current frustum과 previous-frame HZB를 적용한 observer diagnostic</span>
+                      </figcaption>
+                    </figure>
+
+                    <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                      <a href="../../assets/media/tinyrenderer-culling-aabb.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                        <img src="../../assets/media/tinyrenderer-culling-aabb.webp" alt="Bistro 장면의 AABB를 초록색 렌더링 대상, 노란색 frustum 제외, 빨간색 occlusion 제외로 표시한 진단 이미지" width="1600" height="900" loading="lazy" decoding="async">
+                      </a>
+                      <figcaption>
+                        <strong>AABB diagnostic</strong>
+                        <span>초록: 렌더링 · 노랑: frustum 제외 · 빨강: frustum 내부 occlusion 제외</span>
+                      </figcaption>
+                    </figure>
+
+                    <button class="carousel-control carousel-control-previous" type="button" data-carousel-previous aria-label="이전 진단 이미지" title="이전 진단 이미지">
+                      <span aria-hidden="true">←</span>
+                    </button>
+                    <button class="carousel-control carousel-control-next" type="button" data-carousel-next aria-label="다음 진단 이미지" title="다음 진단 이미지">
+                      <span aria-hidden="true">→</span>
+                    </button>
+                  </div>
+
+                  <div class="carousel-navigation">
+                    <span class="carousel-counter" data-carousel-counter aria-live="polite">01 / 03</span>
+                    <div class="carousel-dots" role="group" aria-label="HZB 진단 이미지 선택">
+                      <button type="button" data-carousel-dot aria-label="기준 장면 보기" aria-current="true"></button>
+                      <button type="button" data-carousel-dot aria-label="GPU visibility 판정 결과 보기"></button>
+                      <button type="button" data-carousel-dot aria-label="AABB 진단 보기"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="detail-return-band" id="portfolio-return" aria-label="포트폴리오 복귀">
+        <div class="content-width detail-return-content">
+          <a href="../../#tinyrenderer"><span aria-hidden="true">←</span> Selected work로 돌아가기</a>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <div class="content-width footer-content">
+          <div>
+            <strong>Beomjin Na</strong>
+            <p>C++ Realtime Graphics · Rendering Systems</p>
+          </div>
+          <div class="footer-links">
+            <a href="mailto:bjinn94@gmail.com">bjinn94@gmail.com</a>
+            <a href="https://github.com/BeomJinNa" target="_blank" rel="noreferrer">github.com/BeomJinNa</a>
+          </div>
+        </div>
+      </footer>
+  </main>
+</body>
+</html>

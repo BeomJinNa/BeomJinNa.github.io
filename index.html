@@ -64,12 +64,15 @@
 
           <div class="project-description featured-description">
             <p>C++20과 DirectX 12로 구현한 실시간 렌더링 엔진입니다. 에셋 데이터를 런타임 장면과 GPU 자원으로 연결하는 전체 흐름을 구성하고, 명시적 그래픽스 API의 자원 수명과 동기화 문제를 엔진 구조 안에서 해결했습니다.</p>
+            <div class="source-links" aria-label="TinyRenderer 상세 정보">
+              <a href="projects/realtime-rendering-engine/" aria-label="TinyRenderer 기술 사례 상세 페이지 열기">Technical case study →</a>
+            </div>
           </div>
 
           <ul class="project-highlights" aria-label="TinyRenderer 핵심 구현">
             <li>
               <strong>Architecture</strong>
-              <span>RHI(Rendering Hardware Interface) 계층과 DirectX 12 백엔드, GPU 자원 수명·Command Queue 동기화·Descriptor/Pipeline 관리</span>
+              <span>RHI(Render Hardware Interface) 계층과 DirectX 12 백엔드, GPU 자원 수명·Command Queue 동기화·Descriptor/Pipeline 관리</span>
             </li>
             <li>
               <strong>Rendering</strong>
@@ -77,7 +80,7 @@
             </li>
             <li>
               <strong>Performance</strong>
-              <span>Bistro 장면의 렌더링 객체 1,592개에 HZB 기반 Occlusion Culling을 적용했습니다. Geometry pass는 6.09ms → 4.85ms (-20.4%), Culling pass는 평균 0.24ms였습니다.</span>
+              <span>Bistro 장면의 렌더링 객체 1,592개에 GPU 기반 Frustum + HZB Visibility Culling을 적용했습니다. Geometry pass는 6.09ms → 4.85ms (-20.4%), Visibility pass는 평균 0.24ms였습니다.</span>
             </li>
           </ul>
         </article>
