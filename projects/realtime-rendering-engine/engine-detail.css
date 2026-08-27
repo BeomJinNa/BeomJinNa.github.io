@@ -404,6 +404,35 @@
   font-size: 0.86rem;
 }
 
+.detail-source-link {
+  display: grid;
+  margin: 0;
+  padding: 20px 0 0;
+  gap: 24px;
+  grid-template-columns: 180px minmax(0, 1fr);
+}
+
+.detail-source-link > span {
+  color: var(--ink);
+  font-size: 0.76rem;
+  font-weight: 720;
+}
+
+.detail-source-link a {
+  width: fit-content;
+  color: var(--teal-dark);
+  font-size: 0.86rem;
+  font-weight: 680;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+}
+
+.detail-source-link a:hover,
+.detail-source-link a:focus-visible {
+  color: var(--ink);
+  outline: none;
+}
+
 .rendering-list {
   border-top: 1px solid var(--line-strong);
 }
@@ -692,6 +721,15 @@
   }
 
   .scope-ledger dt {
+    display: block;
+    margin-bottom: 7px;
+  }
+
+  .detail-source-link {
+    display: block;
+  }
+
+  .detail-source-link > span {
     display: block;
     margin-bottom: 7px;
   }
