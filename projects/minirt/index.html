@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="C로 구현한 CPU 레이 트레이서 miniRT. 물체 교차, 그림자, 재귀 반사와 k-d tree 공간 분할.">
+  <title>miniRT · CPU Ray Tracing</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../realtime-rendering-engine/engine-detail.css">
+  <link rel="stylesheet" href="../../portfolio.css">
+  <script src="../../site.js" defer></script>
+</head>
+<body class="detail-page compact-detail">
+  <a class="skip-link" href="#content">본문으로 이동</a>
+  <header class="detail-topbar">
+    <div class="detail-topbar-inner">
+      <a class="portfolio-return" href="../../focus/cpp/index.html#minirt"><span aria-hidden="true">←</span><span>Portfolio</span></a>
+      <a class="detail-owner" href="../../focus/cpp/index.html">Beomjin Na</a>
+    </div>
+  </header>
+  <main id="content">
+    <header class="detail-intro">
+      <div class="detail-hero content-width">
+        <p class="detail-kicker">CPU ray tracing</p>
+        <h1>miniRT</h1>
+        <p class="detail-subtitle">광선과 물체의 교차를 계산해 장면을 그리는 C 렌더러</p>
+        <ul class="detail-meta" aria-label="프로젝트 기본 정보">
+          <li>C</li><li>Ray tracing · k-d tree</li><li>42 Seoul 교육 프로젝트</li>
+        </ul>
+      </div>
+    </header>
+    <section class="detail-section" aria-label="miniRT 렌더링 결과">
+      <div class="content-width">
+        <div class="media-carousel project-gallery" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="miniRT 렌더링과 공간 분할">
+          <div class="carousel-stage">
+            <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+              <a href="../../assets/media/minirt-scene-04.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기">
+                <img src="../../assets/media/minirt-scene-04.webp" alt="여러 반사 구와 조명이 배치된 miniRT 렌더링 장면" width="1600" height="1132" decoding="async" fetchpriority="high">
+              </a>
+              <figcaption>조명과 재귀 반사를 적용한 구 장면</figcaption>
+            </figure>
+            <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+              <a href="../../assets/media/minirt-scene-05.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                <img src="../../assets/media/minirt-scene-05.webp" alt="다수의 원기둥과 여러 색상의 조명이 배치된 miniRT 장면" width="1600" height="1132" loading="lazy" decoding="async">
+              </a>
+              <figcaption>원기둥과 여러 색상의 광원을 배치한 장면</figcaption>
+            </figure>
+            <figure class="visual-frame carousel-slide carousel-slide-diagnostic" data-carousel-slide aria-hidden="true">
+              <a href="../../assets/media/minirt-kdtree.png" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                <img src="../../assets/media/minirt-kdtree.png" alt="miniRT k-d tree의 노드 깊이와 leaf 구성을 출력한 진단 화면" width="1429" height="2160" loading="lazy" decoding="async">
+              </a>
+              <figcaption>k-d tree 구축 결과: 노드 깊이와 leaf 구성</figcaption>
+            </figure>
+            <button class="carousel-control carousel-control-previous" type="button" data-carousel-previous aria-label="이전 이미지" title="이전 이미지"><span aria-hidden="true">←</span></button>
+            <button class="carousel-control carousel-control-next" type="button" data-carousel-next aria-label="다음 이미지" title="다음 이미지"><span aria-hidden="true">→</span></button>
+          </div>
+          <div class="carousel-navigation">
+            <span class="carousel-counter" data-carousel-counter aria-live="polite">01 / 03</span>
+            <div class="carousel-dots" role="group" aria-label="miniRT 이미지 선택">
+              <button type="button" data-carousel-dot aria-label="반사 구 장면 보기" aria-current="true"></button>
+              <button type="button" data-carousel-dot aria-label="원기둥 장면 보기"></button>
+              <button type="button" data-carousel-dot aria-label="k-d tree 진단 보기"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <template id="camera-comparison-template">
+      <section class="detail-section camera-comparison" aria-labelledby="camera-comparison-title">
+        <div class="content-width">
+          <h2 id="camera-comparison-title">카메라 시야각 비교</h2>
+          <p class="camera-comparison-context" data-camera-context></p>
+          <div class="camera-comparison-grid">
+            <figure class="camera-comparison-view">
+              <div class="camera-comparison-image" data-camera-image></div>
+              <figcaption data-camera-caption></figcaption>
+            </figure>
+            <figure class="camera-comparison-view">
+              <div class="camera-comparison-image" data-camera-image></div>
+              <figcaption data-camera-caption></figcaption>
+            </figure>
+            <figure class="camera-comparison-view">
+              <div class="camera-comparison-image" data-camera-image></div>
+              <figcaption data-camera-caption></figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+    </template>
+    <section class="detail-section" aria-labelledby="implementation-title">
+      <div class="content-width">
+        <h2 id="implementation-title">구현</h2>
+        <div class="project-notes">
+          <div><h3>광선에서 픽셀까지</h3><p>카메라에서 생성한 광선과 구·평면·원기둥의 교차를 계산합니다. 교차점에서 광원까지 다른 물체가 가리는지 확인해 그림자를 표현하고, 반사 방향으로 광선을 다시 추적해 픽셀의 색을 구합니다.</p></div>
+          <div><h3>교차 검사 범위 줄이기</h3><p>광선마다 장면 전체의 물체를 검사하지 않도록 k-d tree로 공간을 나눴습니다. 먼저 각 영역을 감싸는 경계 상자(AABB)와 광선의 교차를 검사하고, 통과한 영역 안에서 물체와의 교차를 계산합니다.</p></div>
+        </div>
+        <div class="source-links project-code-links" aria-label="miniRT 소스 코드">
+          <a href="https://github.com/BeomJinNa/42cursus/tree/main/common_core/circle4_miniRT" target="_blank" rel="noreferrer">Project source ↗</a>
+          <a href="https://github.com/BeomJinNa/42cursus/blob/main/common_core/circle4_miniRT/srcs/kd_tree/traverse_tree.c" target="_blank" rel="noreferrer">Tree traversal ↗</a>
+        </div>
+      </div>
+    </section>
+    <section class="detail-return-band" aria-label="포트폴리오 복귀">
+      <div class="content-width detail-return-content"><a href="../../focus/cpp/index.html#minirt"><span aria-hidden="true">←</span> 포트폴리오로 돌아가기</a></div>
+    </section>
+    <footer class="site-footer">
+      <div class="content-width footer-content">
+        <div><strong>Beomjin Na</strong><p>C++ Developer</p></div>
+        <div class="footer-links"><a href="https://github.com/BeomJinNa" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

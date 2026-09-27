@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="C로 구현한 와이어프레임 렌더러 FdF. 높이 데이터의 좌표 변환, 선 래스터화와 색상 보간.">
+  <title>FdF · Wireframe Rendering</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../realtime-rendering-engine/engine-detail.css">
+  <link rel="stylesheet" href="../../portfolio.css">
+  <script src="../../site.js" defer></script>
+</head>
+<body class="detail-page compact-detail">
+  <a class="skip-link" href="#content">본문으로 이동</a>
+  <header class="detail-topbar">
+    <div class="detail-topbar-inner">
+      <a class="portfolio-return" href="../../focus/cpp/index.html#fdf"><span aria-hidden="true">←</span><span>Portfolio</span></a>
+      <a class="detail-owner" href="../../focus/cpp/index.html">Beomjin Na</a>
+    </div>
+  </header>
+  <main id="content">
+    <header class="detail-intro">
+      <div class="detail-hero content-width">
+        <p class="detail-kicker">Wireframe rendering</p>
+        <h1>FdF</h1>
+        <p class="detail-subtitle">높이 데이터를 선으로 연결해 그리는 C 와이어프레임 렌더러</p>
+        <ul class="detail-meta" aria-label="프로젝트 기본 정보">
+          <li>C</li><li>View transform · Line rasterization</li><li>42 Seoul 교육 프로젝트</li>
+        </ul>
+      </div>
+    </header>
+    <section class="detail-section" aria-label="FdF 렌더링 결과">
+      <div class="content-width">
+        <div class="media-carousel project-gallery" style="--gallery-ratio: 160 / 111" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="FdF 와이어프레임 장면">
+          <div class="carousel-stage">
+            <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+              <a href="../../assets/media/fdf-scene-01.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기">
+                <img src="../../assets/media/fdf-scene-01.webp" alt="숫자 42 형태의 높이 데이터를 투영한 FdF 장면" width="1600" height="1110" decoding="async" fetchpriority="high">
+              </a>
+              <figcaption>높이와 색상 데이터를 가진 42 맵의 투영</figcaption>
+            </figure>
+            <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+              <a href="../../assets/media/fdf-scene-02.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                <img src="../../assets/media/fdf-scene-02.webp" alt="조밀한 선으로 지형을 표현한 FdF 와이어프레임 장면" width="1600" height="1110" loading="lazy" decoding="async">
+              </a>
+              <figcaption>조밀한 높이 데이터를 와이어프레임으로 표현한 지형</figcaption>
+            </figure>
+            <button class="carousel-control carousel-control-previous" type="button" data-carousel-previous aria-label="이전 이미지" title="이전 이미지"><span aria-hidden="true">←</span></button>
+            <button class="carousel-control carousel-control-next" type="button" data-carousel-next aria-label="다음 이미지" title="다음 이미지"><span aria-hidden="true">→</span></button>
+          </div>
+          <div class="carousel-navigation">
+            <span class="carousel-counter" data-carousel-counter aria-live="polite">01 / 02</span>
+            <div class="carousel-dots" role="group" aria-label="FdF 이미지 선택">
+              <button type="button" data-carousel-dot aria-label="42 맵 보기" aria-current="true"></button>
+              <button type="button" data-carousel-dot aria-label="지형 맵 보기"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="detail-section" aria-labelledby="implementation-title">
+      <div class="content-width">
+        <h2 id="implementation-title">구현</h2>
+        <div class="project-notes">
+          <div><h3>높이 데이터에서 화면 좌표로</h3><p>입력 파일의 격자 위치와 높이를 3차원 좌표로 구성합니다. 회전·확대·축소를 반영해 화면 좌표로 바꾸고, 인접한 점을 선으로 연결해 지형을 표현합니다.</p></div>
+          <div><h3>선과 색상의 픽셀 계산</h3><p>화면에 투영한 두 점 사이를 Bresenham 알고리즘으로 그립니다. 양 끝점의 색상을 보간해, 점에 주어진 색상이 선을 따라 이어지도록 했습니다.</p></div>
+        </div>
+        <div class="source-links project-code-links" aria-label="FdF 소스 코드">
+          <a href="https://github.com/BeomJinNa/42cursus/tree/main/common_core/circle2_FdF" target="_blank" rel="noreferrer">Project source ↗</a>
+          <a href="https://github.com/BeomJinNa/42cursus/blob/main/common_core/circle2_FdF/srcs/run_mlx/draw_lines.c" target="_blank" rel="noreferrer">Line rasterization ↗</a>
+        </div>
+      </div>
+    </section>
+    <section class="detail-return-band" aria-label="포트폴리오 복귀">
+      <div class="content-width detail-return-content"><a href="../../focus/cpp/index.html#fdf"><span aria-hidden="true">←</span> 포트폴리오로 돌아가기</a></div>
+    </section>
+    <footer class="site-footer">
+      <div class="content-width footer-content">
+        <div><strong>Beomjin Na</strong><p>C++ Developer</p></div>
+        <div class="footer-links"><a href="https://github.com/BeomJinNa" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

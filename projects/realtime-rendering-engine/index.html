@@ -7,6 +7,7 @@
   <title>TinyRenderer · Technical Details</title>
   <link rel="stylesheet" href="../../styles.css">
   <link rel="stylesheet" href="engine-detail.css">
+  <link rel="stylesheet" href="../../portfolio.css">
   <script src="../../site.js" defer></script>
 </head>
 <body class="detail-page">
@@ -14,11 +15,11 @@
 
   <header class="detail-topbar">
     <div class="detail-topbar-inner">
-      <a class="portfolio-return" href="../../#tinyrenderer" aria-label="포트폴리오의 TinyRenderer 소개로 돌아가기">
+      <a class="portfolio-return" href="../../focus/cpp/index.html#tinyrenderer" aria-label="포트폴리오의 TinyRenderer 소개로 돌아가기">
         <span aria-hidden="true">←</span>
-        <span>Selected work</span>
+        <span>Portfolio</span>
       </a>
-      <a class="detail-owner" href="../../">Beomjin Na</a>
+      <a class="detail-owner" href="../../focus/cpp/index.html">Beomjin Na</a>
     </div>
   </header>
 
@@ -28,7 +29,7 @@
         <p class="detail-kicker">Realtime rendering engine</p>
         <h1>TinyRenderer</h1>
         <p class="detail-subtitle">C++20과 DirectX 12로 구현한 개인 렌더링 엔진</p>
-        <p class="hero-copy">장면과 에셋을 준비하고 렌더 패스를 구성한 뒤, RHI를 거쳐 GPU 명령을 실행하는 렌더링 흐름을 구현했습니다.</p>
+        <p class="hero-copy">모델·텍스처를 엔진용 데이터로 변환하고, 장면 갱신부터 렌더 패스 실행과 GPU 자원 회수까지 연결했습니다.</p>
 
         <ul class="detail-meta" aria-label="프로젝트 기본 정보">
           <li>C++20 · HLSL</li>
@@ -71,7 +72,7 @@
         <p class="detail-source-link">
           <span>Code</span>
           <a href="https://github.com/BeomJinNa/TinyRendererPublic" target="_blank" rel="noreferrer" aria-label="TinyRenderer 선별 소스 사례를 GitHub에서 새 창으로 보기">
-            Selected source cases <span aria-hidden="true">↗</span>
+            주요 코드와 설계 사례 <span aria-hidden="true">↗</span>
           </a>
         </p>
       </div>
@@ -90,15 +91,21 @@
           <header class="detail-section-heading">
             <p class="detail-index">Architecture</p>
             <div>
-              <h2 id="architecture-title">엔진의 한 프레임 렌더링 경로</h2>
+              <h2 id="architecture-title">렌더링 구조</h2>
             </div>
           </header>
 
+          <div class="architecture-note">
+            <h3>셰이더 자원 바인딩</h3>
+            <p>DX12의 자원 종류별 레지스터 체계를 그대로 노출하지 않고, Vulkan 확장을 고려한 공통 바인딩 규칙을 두었습니다. 같은 그룹 안에서는 텍스처·버퍼·샘플러의 번호가 겹치지 않게 검증하며, 이 레이아웃을 DX12 백엔드에서 Root Signature와 Descriptor Table로 변환합니다.</p>
+          </div>
+
+          <h3 class="architecture-flow-title">한 프레임의 렌더링 경로</h3>
           <figure class="engine-overview" aria-label="동일 계층의 장면 상태와 엔진 에셋이 프레임 준비, 렌더 파이프라인, RHI와 DirectX 12 백엔드를 거쳐 GPU에서 실행되는 한 프레임의 렌더링 경로">
             <div class="overview-input-group">
               <div class="overview-input-role">
                 <span>Frame inputs</span>
-                <strong>동일 계층의 입력</strong>
+                <strong>렌더링 입력</strong>
               </div>
 
               <div class="overview-inputs">
@@ -287,7 +294,7 @@
               </header>
 
               <figure class="visual-frame feature-media feature-video">
-                <video src="../../assets/media/tinyrenderer-bvh-build-5x.mp4" poster="../../assets/media/tinyrenderer-bvh-build-poster.webp" autoplay muted loop playsinline preload="metadata" data-loop-video aria-label="BVH 깊이에 따라 AABB 계층이 추가되는 과정"></video>
+                <video src="../../assets/media/tinyrenderer-bvh-build-5x.mp4" poster="../../assets/media/tinyrenderer-bvh-build-poster.webp" muted loop playsinline controls preload="metadata" data-loop-video aria-label="BVH 깊이에 따라 AABB 계층이 추가되는 과정"></video>
                 <figcaption>
                   <strong>BVH hierarchy</strong>
                   <span>BVH 깊이에 따른 AABB 계층 시각화 · 5×</span>
@@ -304,7 +311,7 @@
               <div class="hzb-layout">
                 <div>
                   <table class="metric-table">
-                    <caption>Bistro · 1,592 RenderItems · 동일 workload</caption>
+                    <caption>Bistro · 동일한 렌더링 항목 1,592개로 비교</caption>
                     <thead>
                       <tr>
                         <th scope="col">GPU 구간</th>
@@ -332,21 +339,21 @@
                   <div class="carousel-stage">
                     <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
                       <a href="../../assets/media/tinyrenderer-culling-reference.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기">
-                        <img src="../../assets/media/tinyrenderer-culling-reference.webp" alt="Observer view에서 메인 카메라 frustum과 전체 Bistro 장면을 함께 표시한 기준 이미지" width="1600" height="900" loading="lazy" decoding="async">
+                        <img src="../../assets/media/tinyrenderer-culling-reference.webp" alt="기준 카메라의 시야와 전체 Bistro 장면을 외부 시점에서 표시한 이미지" width="1600" height="900" loading="lazy" decoding="async">
                       </a>
                       <figcaption>
-                        <strong>Reference view</strong>
-                        <span>Observer camera에서 확인한 main camera frustum과 기준 장면</span>
+                        <strong>컬링 적용 전</strong>
+                        <span>기준 카메라의 시야와 전체 장면을 외부 시점에서 표시</span>
                       </figcaption>
                     </figure>
 
                     <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
                       <a href="../../assets/media/tinyrenderer-culling-result.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
-                        <img src="../../assets/media/tinyrenderer-culling-result.webp" alt="Observer view에서 frustum과 HZB visibility 판정을 적용한 Bistro 장면" width="1600" height="900" loading="lazy" decoding="async">
+                        <img src="../../assets/media/tinyrenderer-culling-result.webp" alt="기준 카메라의 Frustum과 HZB 컬링 결과를 외부 시점에서 표시한 Bistro 장면" width="1600" height="900" loading="lazy" decoding="async">
                       </a>
                       <figcaption>
-                        <strong>GPU visibility result</strong>
-                        <span>Current frustum과 previous-frame HZB를 적용한 observer diagnostic</span>
+                        <strong>컬링 적용 후</strong>
+                        <span>기준 카메라의 Frustum·이전 프레임 HZB 컬링 결과</span>
                       </figcaption>
                     </figure>
 
@@ -355,7 +362,7 @@
                         <img src="../../assets/media/tinyrenderer-culling-aabb.webp" alt="Bistro 장면의 AABB를 초록색 렌더링 대상, 노란색 frustum 제외, 빨간색 occlusion 제외로 표시한 진단 이미지" width="1600" height="900" loading="lazy" decoding="async">
                       </a>
                       <figcaption>
-                        <strong>AABB diagnostic</strong>
+                        <strong>컬링 결과의 경계 상자</strong>
                         <span>초록: 렌더링 · 노랑: frustum 제외 · 빨강: frustum 내부 occlusion 제외</span>
                       </figcaption>
                     </figure>
@@ -386,7 +393,7 @@
 
       <section class="detail-return-band" id="portfolio-return" aria-label="포트폴리오 복귀">
         <div class="content-width detail-return-content">
-          <a href="../../#tinyrenderer"><span aria-hidden="true">←</span> Selected work로 돌아가기</a>
+          <a href="../../focus/cpp/index.html#tinyrenderer"><span aria-hidden="true">←</span> 포트폴리오로 돌아가기</a>
         </div>
       </section>
 
@@ -397,7 +404,6 @@
             <p>C++ Realtime Graphics · Rendering Systems</p>
           </div>
           <div class="footer-links">
-            <a href="mailto:bjinn94@gmail.com">bjinn94@gmail.com</a>
             <a href="https://github.com/BeomJinNa" target="_blank" rel="noreferrer">github.com/BeomJinNa</a>
           </div>
         </div>

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Beomjin Na의 C/C++ 프로젝트 포트폴리오. 개인 렌더링 엔진과 42 Seoul 교육과정의 렌더러·IRC 서버 구현 경험.">
+  <title>Beomjin Na · C++ Portfolio</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../portfolio.css">
+  <script src="../../site.js" defer></script>
+</head>
+<body class="focus-page">
+  <a class="skip-link" href="#content">본문으로 이동</a>
+  <div class="site-shell">
+    <aside class="site-rail" aria-label="프로필과 페이지 탐색">
+      <div class="identity">
+        <a class="name" href="#top">Beomjin Na</a>
+        <p>C++ Developer</p>
+      </div>
+      <nav class="site-nav" aria-label="프로젝트 목차">
+        <a href="#tinyrenderer"><span>01</span>TinyRenderer</a>
+        <a href="#minirt"><span>02</span>miniRT</a>
+        <a href="#fdf"><span>03</span>FdF</a>
+        <a href="#irc"><span>04</span>ft_irc</a>
+        <a href="#minishell"><span>05</span>minishell</a>
+      </nav>
+      <div class="rail-links">
+        <a href="https://github.com/BeomJinNa" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </div>
+    </aside>
+    <main id="content">
+      <header class="hero content-width" id="top">
+        <p class="section-label">Selected Work</p>
+        <h1>C++ Portfolio</h1>
+        <p class="hero-copy">C와 C++로 개인·팀 프로젝트를 진행하며 프로그램의 구조와 자원 관리를 다뤘습니다.<br class="desktop-break"> 개인 렌더링 엔진과 42 Seoul 교육과정에서 구현한 프로젝트입니다.</p>
+      </header>
+      <section class="focus-work" aria-label="선별 프로젝트">
+        <article class="project-band content-width" id="tinyrenderer">
+          <header class="project-header">
+            <div><p class="project-number">01</p><h2>TinyRenderer</h2></div>
+            <p class="project-stack">C++20 · DirectX 12 · HLSL</p>
+          </header>
+          <div class="project-description project-intro">
+            <p>장면 관리부터 GPU 실행까지 구성한 C++ 실시간 렌더링 엔진입니다. 렌더링 코드가 특정 API에 묶이지 않도록 RHI 계층을 두고, 현재는 DirectX 12 백엔드로 동작합니다.</p>
+            <div class="source-links"><a href="../../projects/realtime-rendering-engine/index.html">설계와 구현 →</a></div>
+          </div>
+          <div class="media-carousel project-gallery focus-gallery" style="--gallery-ratio: 16 / 9" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="TinyRenderer 미디어">
+            <div class="carousel-stage">
+              <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+                <video data-loop-video muted loop playsinline controls preload="metadata" poster="../../assets/media/tinyrenderer-poster.webp" aria-label="TinyRenderer 렌더링 데모">
+                  <source src="../../assets/media/tinyrenderer-demo.mp4" type="video/mp4">
+                  브라우저가 MP4 영상을 지원하지 않습니다.
+                </video>
+                <figcaption>실시간 렌더링 · 애니메이션 · 장면 탐색</figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                <video data-loop-video muted loop playsinline controls preload="metadata" poster="../../assets/media/tinyrenderer-bvh-build-poster.webp" aria-label="BVH 공간 구조 시각화 영상" tabindex="-1">
+                  <source src="../../assets/media/tinyrenderer-bvh-build-5x.mp4" type="video/mp4">
+                  브라우저가 MP4 영상을 지원하지 않습니다.
+                </video>
+                <figcaption>BVH 공간 구조 시각화 · 5배속</figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                <a href="../../assets/media/tinyrenderer-main.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                  <img src="../../assets/media/tinyrenderer-main.webp" alt="TinyRenderer로 렌더링한 Bistro 거리" width="1600" height="900" loading="lazy" decoding="async">
+                </a>
+                <figcaption>Bistro 장면 렌더링</figcaption>
+              </figure>
+            </div>
+            <div class="gallery-navigation">
+              <button class="carousel-control" type="button" data-carousel-previous aria-label="이전 미디어" title="이전 미디어"><span aria-hidden="true">←</span></button>
+              <div class="media-thumbnails" data-thumbnail-strip role="group" aria-label="TinyRenderer 미디어 선택">
+                <button class="media-thumbnail" type="button" data-carousel-dot aria-label="렌더링 데모 영상" title="렌더링 데모 영상" aria-current="true"><img src="../../assets/media/tinyrenderer-poster.webp" alt="" width="1600" height="900" loading="lazy"><span class="thumbnail-play" aria-hidden="true">▶</span></button>
+                <button class="media-thumbnail" type="button" data-carousel-dot aria-label="BVH 시각화 영상" title="BVH 시각화 영상"><img src="../../assets/media/tinyrenderer-bvh-build-poster.webp" alt="" width="1600" height="900" loading="lazy"><span class="thumbnail-play" aria-hidden="true">▶</span></button>
+                <button class="media-thumbnail" type="button" data-carousel-dot aria-label="Bistro 렌더링 이미지" title="Bistro 렌더링 이미지"><img src="../../assets/media/tinyrenderer-main.webp" alt="" width="1600" height="900" loading="lazy"></button>
+              </div>
+              <button class="carousel-control" type="button" data-carousel-next aria-label="다음 미디어" title="다음 미디어"><span aria-hidden="true">→</span></button>
+              <span class="gallery-counter" data-carousel-counter aria-live="polite">01 / 03</span>
+            </div>
+          </div>
+          <ul class="project-highlights" aria-label="TinyRenderer 핵심 구현">
+            <li><strong>그래픽스 API 추상화</strong><span>Vulkan 확장을 고려한 공통 레이아웃과 DX12 바인딩 구현의 분리</span></li>
+            <li><strong>GPU 자원 관리</strong><span>업로드 동기화와 GPU 작업 완료 시점에 맞춘 자원 회수</span></li>
+            <li><strong>렌더링과 진단</strong><span>PBR·애니메이션·가시성 판정, BVH 시각화와 패스별 시간 측정</span></li>
+          </ul>
+        </article>
+        <article class="project-band content-width" id="minirt">
+          <header class="project-header">
+            <div><p class="project-number">02</p><h2>miniRT</h2></div>
+            <p class="project-stack">C · CPU Ray Tracing · k-d Tree</p>
+          </header>
+          <div class="media-carousel project-gallery focus-gallery" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="miniRT 미디어">
+            <div class="carousel-stage">
+              <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+                <a href="../../assets/media/minirt-scene-04.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기">
+                  <img src="../../assets/media/minirt-scene-04.webp" alt="miniRT가 렌더링한 반사 구와 조명 장면" width="1600" height="1132" loading="lazy" decoding="async">
+                </a>
+                <figcaption>조명과 재귀 반사를 적용한 구 장면</figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                <a href="../../assets/media/minirt-scene-05.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                  <img src="../../assets/media/minirt-scene-05.webp" alt="원기둥과 여러 색상의 광원을 배치한 miniRT 장면" width="1600" height="1132" loading="lazy" decoding="async">
+                </a>
+                <figcaption>원기둥과 여러 색상의 광원을 배치한 장면</figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide carousel-slide-diagnostic" data-carousel-slide aria-hidden="true">
+                <a href="../../assets/media/minirt-kdtree.png" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                  <img src="../../assets/media/minirt-kdtree.png" alt="k-d tree의 노드 깊이와 leaf 구성" width="1429" height="2160" loading="lazy" decoding="async">
+                </a>
+                <figcaption>k-d tree 구축 결과 · 노드 깊이와 leaf 구성</figcaption>
+              </figure>
+            </div>
+            <div class="gallery-navigation">
+              <button class="carousel-control" type="button" data-carousel-previous aria-label="이전 이미지" title="이전 이미지"><span aria-hidden="true">←</span></button>
+              <div class="media-thumbnails" data-thumbnail-strip role="group" aria-label="miniRT 이미지 선택">
+                <button class="media-thumbnail" type="button" data-carousel-dot aria-label="반사 구 장면" title="반사 구 장면" aria-current="true"><img src="../../assets/media/minirt-scene-04.webp" alt="" width="1600" height="1132" loading="lazy"></button>
+                <button class="media-thumbnail" type="button" data-carousel-dot aria-label="원기둥 장면" title="원기둥 장면"><img src="../../assets/media/minirt-scene-05.webp" alt="" width="1600" height="1132" loading="lazy"></button>
+                <button class="media-thumbnail media-thumbnail-diagnostic" type="button" data-carousel-dot aria-label="k-d tree 진단" title="k-d tree 진단"><img src="../../assets/media/minirt-kdtree.png" alt="" width="1429" height="2160" loading="lazy"></button>
+              </div>
+              <button class="carousel-control" type="button" data-carousel-next aria-label="다음 이미지" title="다음 이미지"><span aria-hidden="true">→</span></button>
+              <span class="gallery-counter" data-carousel-counter aria-live="polite">01 / 03</span>
+            </div>
+          </div>
+          <div class="project-description">
+            <p>광선과 물체의 교차를 CPU에서 계산하는 C 레이 트레이서입니다. 그림자와 재귀 반사를 표현하고, k-d tree로 광선이 지나가는 영역의 물체를 찾아 검사합니다.</p>
+            <div class="source-links"><a href="../../projects/minirt/index.html">렌더링 결과와 구현 →</a></div>
+          </div>
+          <template id="minirt-camera-comparison-template">
+            <section class="focus-camera-comparison" aria-labelledby="minirt-camera-title">
+              <h3 id="minirt-camera-title">카메라 설정 비교</h3>
+              <p class="camera-comparison-context" data-camera-context></p>
+              <section class="camera-scene" aria-labelledby="minirt-camera-scene-1">
+                <h4 id="minirt-camera-scene-1" data-camera-scene-title></h4>
+                <div class="camera-comparison-grid" role="group" aria-label="첫 번째 장면의 카메라 설정별 비교" tabindex="0">
+                  <figure class="camera-comparison-view"><div class="camera-comparison-image" data-camera-image></div><figcaption data-camera-caption></figcaption></figure>
+                  <figure class="camera-comparison-view"><div class="camera-comparison-image" data-camera-image></div><figcaption data-camera-caption></figcaption></figure>
+                  <figure class="camera-comparison-view"><div class="camera-comparison-image" data-camera-image></div><figcaption data-camera-caption></figcaption></figure>
+                </div>
+              </section>
+              <section class="camera-scene" aria-labelledby="minirt-camera-scene-2">
+                <h4 id="minirt-camera-scene-2" data-camera-scene-title></h4>
+                <div class="camera-comparison-grid" role="group" aria-label="두 번째 장면의 카메라 설정별 비교" tabindex="0">
+                  <figure class="camera-comparison-view"><div class="camera-comparison-image" data-camera-image></div><figcaption data-camera-caption></figcaption></figure>
+                  <figure class="camera-comparison-view"><div class="camera-comparison-image" data-camera-image></div><figcaption data-camera-caption></figcaption></figure>
+                  <figure class="camera-comparison-view"><div class="camera-comparison-image" data-camera-image></div><figcaption data-camera-caption></figcaption></figure>
+                </div>
+              </section>
+            </section>
+          </template>
+        </article>
+        <article class="project-band content-width" id="fdf">
+          <header class="project-header">
+            <div><p class="project-number">03</p><h2>FdF</h2></div>
+            <p class="project-stack">C · Line Rasterization · View Transform</p>
+          </header>
+          <div class="media-carousel project-gallery focus-gallery" style="--gallery-ratio: 82 / 59" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="FdF 미디어">
+            <div class="carousel-stage">
+              <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+                <video data-loop-video muted loop playsinline controls preload="metadata" poster="../../assets/media/fdf-poster.webp" aria-label="FdF 지형의 회전과 시점 변환 영상">
+                  <source src="../../assets/media/fdf-demo.mp4" type="video/mp4">
+                  브라우저가 MP4 영상을 지원하지 않습니다.
+                </video>
+                <figcaption>와이어프레임 지형의 회전과 시점 변환</figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                <a href="../../assets/media/fdf-scene-01.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                  <img src="../../assets/media/fdf-scene-01.webp" alt="숫자 42 형태의 높이 데이터를 투영한 FdF 장면" width="1600" height="1110" loading="lazy" decoding="async">
+                </a>
+                <figcaption>높이와 색상 데이터를 가진 42 맵</figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                <a href="../../assets/media/fdf-scene-02.webp" target="_blank" rel="noreferrer" title="원본 크기로 보기" tabindex="-1">
+                  <img src="../../assets/media/fdf-scene-02.webp" alt="조밀한 높이 데이터를 선으로 그린 FdF 지형" width="1600" height="1110" loading="lazy" decoding="async">
+                </a>
+                <figcaption>조밀한 높이 데이터의 와이어프레임 표현</figcaption>
+              </figure>
+            </div>
+            <div class="gallery-navigation">
+              <button class="carousel-control" type="button" data-carousel-previous aria-label="이전 미디어" title="이전 미디어"><span aria-hidden="true">←</span></button>
+              <div class="media-thumbnails" data-thumbnail-strip role="group" aria-label="FdF 미디어 선택">
+                <button class="media-thumbnail" type="button" data-carousel-dot aria-label="시점 변환 영상" title="시점 변환 영상" aria-current="true"><img src="../../assets/media/fdf-poster.webp" alt="" width="1312" height="944" loading="lazy"><span class="thumbnail-play" aria-hidden="true">▶</span></button>
+                <button class="media-thumbnail" type="button" data-carousel-dot aria-label="42 맵 이미지" title="42 맵 이미지"><img src="../../assets/media/fdf-scene-01.webp" alt="" width="1600" height="1110" loading="lazy"></button>
+                <button class="media-thumbnail" type="button" data-carousel-dot aria-label="지형 이미지" title="지형 이미지"><img src="../../assets/media/fdf-scene-02.webp" alt="" width="1600" height="1110" loading="lazy"></button>
+              </div>
+              <button class="carousel-control" type="button" data-carousel-next aria-label="다음 미디어" title="다음 미디어"><span aria-hidden="true">→</span></button>
+              <span class="gallery-counter" data-carousel-counter aria-live="polite">01 / 03</span>
+            </div>
+          </div>
+          <div class="project-description">
+            <p>숫자로 주어진 높이 데이터를 회전·확대하며 볼 수 있는 C 와이어프레임 렌더러입니다. 3차원 좌표를 화면 좌표로 변환하고, 점 사이의 선과 색상을 픽셀 단위로 계산했습니다.</p>
+            <div class="source-links"><a href="../../projects/fdf/index.html">좌표 변환과 구현 →</a></div>
+          </div>
+        </article>
+      </section>
+      <section class="course-project content-width" id="irc" aria-labelledby="irc-title">
+        <p class="section-label">42 Seoul · Team Project</p>
+        <h2 id="irc-title">ft_irc <span>IRC 서버</span></h2>
+        <p>42 Seoul에서 5명이 C++로 구현한 IRC 서버입니다. 소켓 통신과 사용자·채팅방 관리 기능을 주로 담당했습니다.</p>
+        <a class="text-link" href="https://github.com/BeomJinNa/42cursus/tree/main/common_core/circle5_ft_irc" target="_blank" rel="noreferrer">소스코드 ↗</a>
+      </section>
+      <section class="course-project content-width" id="minishell" aria-labelledby="minishell-title">
+        <p class="section-label">42 Seoul · Team Project</p>
+        <h2 id="minishell-title">minishell <span>간소화된 Bash 셸</span></h2>
+        <p>42 Seoul에서 C로 구현한 간소화된 Bash 셸 프로젝트입니다. 내부 해시 테이블을 구현하고, 입력 명령어 파싱과 환경변수 처리를 담당했습니다.</p>
+        <a class="text-link" href="https://github.com/BeomJinNa/42cursus/tree/main/common_core/circle3_minishell" target="_blank" rel="noreferrer">소스코드 ↗</a>
+      </section>
+      <footer class="site-footer">
+        <div class="content-width footer-content">
+          <div><strong>Beomjin Na</strong><p>C++ Developer</p></div>
+          <div class="footer-links"><a href="https://github.com/BeomJinNa" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+        </div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
