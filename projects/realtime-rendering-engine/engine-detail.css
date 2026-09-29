@@ -578,6 +578,13 @@
   text-align: right;
 }
 
+.metric-context {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.8;
+}
+
 .evidence-carousel .carousel-stage {
   --carousel-caption-height: 70px;
   display: grid;
@@ -626,6 +633,14 @@
   color: #aab3b5;
   font-size: 0.62rem;
   line-height: 1.35;
+}
+
+.animation-carousel .carousel-slide video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
 }
 
 .detail-return-band {

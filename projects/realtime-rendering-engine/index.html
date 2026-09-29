@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="TinyRenderer의 렌더링 구조, RHI, shadow, ambient occlusion, BVH와 HZB 구현 결과">
+  <meta name="description" content="TinyRenderer의 에셋·렌더링 구조, RHI, 애니메이션 전환과 스키닝, shadow, ambient occlusion, BVH와 HZB 구현 결과">
   <title>TinyRenderer · Technical Details</title>
   <link rel="stylesheet" href="../../styles.css">
   <link rel="stylesheet" href="engine-detail.css">
@@ -29,7 +29,7 @@
         <p class="detail-kicker">Realtime rendering engine</p>
         <h1>TinyRenderer</h1>
         <p class="detail-subtitle">C++20과 DirectX 12로 구현한 개인 렌더링 엔진</p>
-        <p class="hero-copy">모델·텍스처를 엔진용 데이터로 변환하고, 장면 갱신부터 렌더 패스 실행과 GPU 자원 회수까지 연결했습니다.</p>
+        <p class="hero-copy">모델·텍스처 로딩부터 장면 갱신, 화면 렌더링과 GPU 자원 관리까지 구현했습니다.</p>
 
         <ul class="detail-meta" aria-label="프로젝트 기본 정보">
           <li>C++20 · HLSL · CMake</li>
@@ -61,11 +61,11 @@
           </div>
           <div>
             <dt>RHI 계층</dt>
-            <dd>현재는 DirectX 12 백엔드를 사용하며, Vulkan 백엔드 확장을 고려해 렌더링 코드와 그래픽스 API 구현부 사이에 공통 자원과 명령 인터페이스를 두었습니다.</dd>
+            <dd>렌더링 코드가 특정 그래픽스 API에 직접 의존하지 않도록 공통 인터페이스를 두었습니다. 현재 구현은 DirectX 12이며, Vulkan 확장을 고려해 설계했습니다.</dd>
           </div>
           <div>
             <dt>외부 라이브러리</dt>
-            <dd>tinygltf·Assimp·DirectXTex는 모델과 이미지 파일을 읽는 데 사용하며, 읽어온 데이터는 엔진 전용 중간 데이터로 변환해 에셋 관리와 렌더링에 사용합니다.</dd>
+            <dd>모델·이미지 파일을 읽는 데 tinygltf·Assimp·DirectXTex를 사용했습니다. 읽은 데이터를 엔진 형식으로 변환하고 관리하는 부분은 직접 구성했습니다.</dd>
           </div>
         </dl>
 
@@ -82,6 +82,7 @@
       <span class="detail-toc-label">Contents</span>
       <div class="detail-toc-links">
         <a href="#architecture">Architecture</a>
+        <a href="#animation">Animation</a>
         <a href="#rendering">Rendering</a>
       </div>
     </nav>
@@ -95,9 +96,19 @@
             </div>
           </header>
 
+          <div class="architecture-note" id="asset-pipeline">
+            <h3>에셋 변환과 로딩</h3>
+            <p>파일 포맷이 달라도 렌더링에서는 같은 형식의 데이터를 사용할 수 있도록 모델·텍스처를 엔진 공통 형식으로 변환해 저장했습니다. 실행 중에는 변환된 데이터를 불러오도록 분리해, 렌더링 코드가 원본 파일 포맷이나 파서에 직접 의존하지 않게 했습니다.</p>
+          </div>
+
+          <div class="architecture-note" id="entity-management">
+            <h3>장면 오브젝트 관리</h3>
+            <p>여러 오브젝트가 공유하는 모델 구성과, 각 오브젝트의 위치·회전·애니메이션 상태를 분리해 관리했습니다. 매 프레임 렌더링에 필요한 데이터를 모아 전달하도록 구성해, 장면 상태를 관리하는 부분과 그리기 작업을 분리했습니다.</p>
+          </div>
+
           <div class="architecture-note" id="shader-binding">
             <h3>셰이더 자원 바인딩</h3>
-            <p>DX12와 Vulkan에서 같은 HLSL 소스를 재사용할 수 있도록 공통 바인딩 규칙을 정했습니다. DX12는 레지스터 종류가 다르면 같은 번호를 사용할 수 있지만, 공통 레이아웃에서는 Vulkan 확장을 고려해 같은 그룹 안의 바인딩 번호가 서로 겹치지 않도록 제한했습니다.</p>
+            <p>Vulkan으로 확장할 때도 같은 HLSL 소스를 사용할 수 있도록, 셰이더에 텍스처·버퍼를 연결하는 번호 규칙을 정했습니다. DX12는 자원 종류가 다르면 같은 레지스터 번호를 쓸 수 있지만, Vulkan의 같은 descriptor set 안에서는 바인딩 번호가 겹치면 안 됩니다. 이에 맞춰 공통 인터페이스에서도 같은 그룹 안의 번호를 자원 종류와 관계없이 중복 없이 배정했습니다.</p>
           </div>
 
           <h3 class="architecture-flow-title">한 프레임의 렌더링 경로</h3>
@@ -136,20 +147,20 @@
             <div class="overview-stack">
               <div class="overview-stage overview-stage-primary">
                 <span class="stage-level">Frame preparation</span>
-                <strong>장면 상태와 에셋 참조를 현재 프레임에 반영</strong>
-                <small>카메라 · 오브젝트 변환 · 조명 · 애니메이션 결과 갱신</small>
+                <strong>이번 프레임을 그리는 데 필요한 장면 데이터를 준비</strong>
+                <small>카메라 · 오브젝트 변환 · 조명 · 애니메이션 결과</small>
               </div>
               <i aria-hidden="true">↓</i>
               <div class="overview-stage">
                 <span class="stage-level">Render pipeline</span>
-                <strong>활성 렌더 패스가 draw와 dispatch 작업을 구성</strong>
-                <small>렌더 패스 순서 · 가시성 판정 · 머터리얼과 파이프라인 연결</small>
+                <strong>렌더 패스 순서에 따라 그리기와 연산 작업을 구성</strong>
+                <small>가시성 판정 · 머터리얼 선택 · draw와 dispatch 구성</small>
               </div>
               <i aria-hidden="true">↓</i>
               <div class="overview-stage">
                 <span class="stage-level">RHI</span>
-                <strong>자원과 파이프라인을 바인딩하고 공통 명령을 기록</strong>
-                <small>draw · dispatch · copy · 자원 상태 전환</small>
+                <strong>공통 인터페이스로 자원을 연결하고 명령을 기록</strong>
+                <small>셰이더 자원 바인딩 · draw · dispatch · copy · 자원 상태 전환</small>
               </div>
               <i aria-hidden="true">↓</i>
               <div class="overview-stage">
@@ -173,7 +184,57 @@
           </figure>
           <div class="architecture-note" id="gpu-resource-lifetime">
             <h3>GPU 자원 회수</h3>
-            <p>자원 해제를 요청하면 기존 핸들을 즉시 무효화해 새 작업에서 참조하지 못하게 합니다. 실제 GPU 객체는 해당 자원을 사용한 작업의 fence 완료를 확인한 뒤 파괴합니다.</p>
+            <p>CPU에서 해제를 요청해도 GPU는 해당 자원을 사용 중일 수 있습니다. 기존 핸들은 즉시 무효화해 새 작업에서 참조하지 못하게 하고, 실제 GPU 객체는 fence로 해당 자원을 사용한 작업의 완료를 확인한 뒤 해제합니다.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-section" id="animation" aria-labelledby="animation-title">
+        <div class="content-width">
+          <header class="detail-section-heading">
+            <p class="detail-index">Animation</p>
+            <div>
+              <h2 id="animation-title">애니메이션 전환과 스키닝</h2>
+            </div>
+          </header>
+
+          <p class="feature-description">정지·걷기·달리기(Idle·Walk·Run) 동작이 전환될 때 두 애니메이션의 포즈를 섞어 자연스럽게 이어지도록 했습니다. 행렬 자체를 보간하는 대신, 각 노드의 로컬 위치·크기는 선형 보간하고 회전은 quaternion slerp로 블렌딩했습니다.</p>
+          <p class="feature-description">보간한 로컬 변환은 루트부터 자식 순서로 누적해 각 관절의 장면 좌표계 변환을 구합니다. 이후 관절 변환을 메시의 로컬 좌표계로 옮기고 inverse bind matrix와 조합해, 정점을 현재 포즈로 변형하는 스키닝 행렬을 구성했습니다.</p>
+
+          <div class="media-carousel evidence-carousel animation-carousel feature-media" data-carousel data-animation-media tabindex="0" role="region" aria-roledescription="carousel" aria-label="애니메이션 전환 비교">
+            <div class="carousel-stage">
+              <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+                <video muted loop playsinline controls preload="metadata" width="1280" height="720" poster="../../assets/media/tinyrenderer-animation-blended-poster.webp" data-loop-video data-animation-video aria-label="포즈 블렌딩을 적용한 애니메이션 전환">
+                  <source src="../../assets/media/tinyrenderer-animation-blended-1_2x.mp4" type="video/mp4">
+                </video>
+                <figcaption>
+                  <strong>포즈 블렌딩 적용</strong>
+                  <span>Idle · Walk · Run 전환 · 1.2배속</span>
+                </figcaption>
+              </figure>
+              <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+                <video muted loop playsinline controls preload="metadata" width="1280" height="720" poster="../../assets/media/tinyrenderer-animation-direct-poster.webp" data-loop-video data-animation-video aria-label="블렌딩 없이 즉시 전환하는 애니메이션" tabindex="-1">
+                  <source src="../../assets/media/tinyrenderer-animation-direct-1_2x.mp4" type="video/mp4">
+                </video>
+                <figcaption>
+                  <strong>즉시 전환 · 블렌딩 미적용</strong>
+                  <span>별도 촬영한 전환 예시 · 1.2배속</span>
+                </figcaption>
+              </figure>
+              <button class="carousel-control carousel-control-previous" type="button" data-carousel-previous aria-label="이전 애니메이션 영상" title="이전 애니메이션 영상">
+                <span aria-hidden="true">←</span>
+              </button>
+              <button class="carousel-control carousel-control-next" type="button" data-carousel-next aria-label="다음 애니메이션 영상" title="다음 애니메이션 영상">
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
+            <div class="carousel-navigation">
+              <span class="carousel-counter" data-carousel-counter aria-live="polite">01 / 02</span>
+              <div class="carousel-dots" role="group" aria-label="애니메이션 영상 선택">
+                <button type="button" data-carousel-dot aria-label="포즈 블렌딩 적용 영상 보기" aria-current="true"></button>
+                <button type="button" data-carousel-dot aria-label="즉시 전환 영상 보기"></button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -314,6 +375,8 @@
                 <h3 id="hzb-title">GPU visibility culling A/B</h3>
               </header>
 
+              <p class="feature-description">카메라 시야 밖의 물체는 Frustum 컬링으로, 다른 물체에 가려진 물체는 HZB 기반 occlusion 컬링으로 제외했습니다. 제외 결과는 별도의 관찰 카메라와 경계 상자 표시로 확인했고, Geometry pass 시간과 컬링 연산 비용은 GPU 구간을 나눠 측정했습니다.</p>
+
               <div class="hzb-layout">
                 <div>
                   <table class="metric-table">
@@ -339,6 +402,7 @@
                     </tbody>
                   </table>
                   <p class="metric-result"><strong>Geometry pass -20.4%</strong><span>Frustum + HZB visibility pass 비용은 별도 구간으로 함께 표시</span></p>
+                  <p class="metric-context">RTX 3090 · 1600 × 900 · VSync On<br>워밍업 60프레임 제외 · GPU 240개 샘플 평균<br>단일 장면의 해당 패스 비교이며, 전체 프레임 개선율은 아닙니다.</p>
                 </div>
 
                 <div class="media-carousel evidence-carousel" data-carousel tabindex="0" role="region" aria-roledescription="carousel" aria-label="GPU visibility 컬링 진단 이미지 비교">
