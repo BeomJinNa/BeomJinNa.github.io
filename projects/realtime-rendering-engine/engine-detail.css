@@ -469,6 +469,14 @@
   width: min(100%, 900px);
 }
 
+.feature-description {
+  max-width: 780px;
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 0.91rem;
+  line-height: 1.85;
+}
+
 .feature-video {
   margin: 0;
   border-color: var(--line-strong);

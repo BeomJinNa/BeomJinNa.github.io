@@ -90,6 +90,7 @@
 .architecture-note { max-width: 780px; margin-bottom: 32px; }
 .architecture-note h3, .architecture-flow-title { margin: 0 0 14px; font-size: 1.05rem; }
 .architecture-note p { margin: 0; color: var(--muted); font-size: .91rem; line-height: 1.85; }
+.engine-overview + .architecture-note { margin: 32px 0 0; }
 
 /* Keep the visible dots small without making their pointer targets small. */
 .carousel-dots button { position: relative; width: 24px; height: 24px; padding: 0; border: 0; background: transparent !important; }
