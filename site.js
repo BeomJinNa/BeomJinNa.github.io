@@ -1,7 +1,26 @@
-// Preserve project anchors from previously shared root-page links.
+// Legacy course-project anchors have no entry in the neutral directory.
 if (document.body.classList.contains("directory-page") &&
-    ["#tinyrenderer", "#minirt", "#fdf", "#irc", "#minishell"].includes(window.location.hash)) {
+    ["#irc", "#minishell"].includes(window.location.hash)) {
   window.location.replace(new URL("focus/cpp/index.html" + window.location.hash, window.location.href));
+}
+
+// Shared project pages return to the explicit entry focus, never a saved session.
+const focusRoutes = new Map([
+  ["cpp", { path: "focus/cpp/index.html", label: "C++ Portfolio" }],
+  ["solver", { path: "focus/solver/index.html", label: "개발 포트폴리오" }],
+]);
+const entryFocus = focusRoutes.get(new URLSearchParams(window.location.search).get("focus"));
+if (document.body.dataset.project) {
+  const siteRoot = new URL(".", document.currentScript.src);
+  const home = new URL(entryFocus?.path || "index.html", siteRoot);
+  const back = new URL(home);
+  back.hash = document.body.dataset.project;
+  for (const link of document.querySelectorAll("[data-focus-return]")) {
+    link.href = back.href;
+    link.setAttribute("aria-label", (entryFocus?.label || "프로젝트 목록") + "으로 돌아가기");
+    link.querySelector("[data-return-label]").textContent = entryFocus?.label || "Projects";
+  }
+  for (const link of document.querySelectorAll("[data-focus-home]")) link.href = home.href;
 }
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -38,7 +57,7 @@ for (const carousel of carousels) {
         focusTarget.tabIndex = isActive ? 0 : -1;
       }
       if (slideVideo) {
-        if (isActive && canAutoPlay(slideVideo)) {
+        if (isActive && !carousel.hasAttribute("data-manual-playback") && canAutoPlay(slideVideo)) {
           slideVideo.play().catch(() => {});
         } else {
           slideVideo.pause();

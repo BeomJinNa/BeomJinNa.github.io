@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="C/C++ 개발 포트폴리오. 렌더링 프로그램, 데이터와 자원 관리, 스레드 동기화 및 소켓 통신 구현 경험.">
+  <title>Beomjin Na · 개발 포트폴리오</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../portfolio.css">
+  <link rel="stylesheet" href="solver.css">
+  <script src="../../site.js" defer></script>
+</head>
+<body class="solver-page">
+  <a class="skip-link" href="#content">본문으로 이동</a>
+  <header class="solver-topbar solver-width">
+    <a class="solver-name" href="#top">Beomjin Na</a>
+    <nav aria-label="본문 목차">
+      <a href="#development">개발 프로젝트</a>
+      <a href="#foundation">C/C++ 개발 기반</a>
+    </nav>
+  </header>
+  <main id="content" class="solver-width">
+    <header class="solver-intro" id="top">
+      <p class="solver-eyebrow">C/C++</p>
+      <h1>개발 포트폴리오</h1>
+      <p>C/C++로 구현한 렌더링 프로그램과 동시성·소켓 프로그래밍 프로젝트입니다.</p>
+    </header>
+
+    <section class="solver-section" id="development" aria-labelledby="development-title">
+      <h2 id="development-title">C/C++ 개발 프로젝트</h2>
+      <article class="solver-project" id="tinyrenderer">
+        <header><h3>TinyRenderer</h3><p class="solver-meta">개인 렌더링 엔진 · C++20 · DirectX 12 · HLSL · CMake</p></header>
+        <p>C++와 DirectX 12로 개발하는 개인 렌더링 엔진입니다. 모델·텍스처를 불러오고 장면을 구성해 화면에 그리기까지의 흐름을 구현했습니다. 조명·그림자·애니메이션을 처리하며, 기능을 추가할 수 있도록 데이터 관리와 렌더링 코드를 나누어 구성했습니다.</p>
+        <div class="media-carousel project-gallery focus-gallery solver-gallery" style="--gallery-ratio: 16 / 9" data-carousel data-manual-playback tabindex="0" role="region" aria-roledescription="carousel" aria-label="TinyRenderer 미디어">
+          <div class="carousel-stage">
+            <figure class="visual-frame carousel-slide is-active" data-carousel-slide aria-hidden="false">
+              <video muted playsinline controls preload="none" poster="../../assets/media/tinyrenderer-poster.webp" aria-label="TinyRenderer 렌더링 데모">
+                <source src="../../assets/media/tinyrenderer-demo.mp4" type="video/mp4">
+                브라우저가 MP4 영상을 지원하지 않습니다.
+              </video>
+              <figcaption>실시간 렌더링 · 애니메이션 · 장면 탐색</figcaption>
+            </figure>
+            <figure class="visual-frame carousel-slide" data-carousel-slide aria-hidden="true">
+              <video muted playsinline controls preload="none" poster="../../assets/media/tinyrenderer-bvh-build-poster.webp" aria-label="TinyRenderer의 BVH 계층 시각화" tabindex="-1">
+                <source src="../../assets/media/tinyrenderer-bvh-build-5x.mp4" type="video/mp4">
+                브라우저가 MP4 영상을 지원하지 않습니다.
+              </video>
+              <figcaption>BVH 공간 구조 시각화 · 5배속</figcaption>
+            </figure>
+          </div>
+          <div class="gallery-navigation">
+            <button class="carousel-control" type="button" data-carousel-previous aria-label="이전 미디어" title="이전 미디어"><span aria-hidden="true">←</span></button>
+            <div class="media-thumbnails" data-thumbnail-strip role="group" aria-label="TinyRenderer 미디어 선택">
+              <button class="media-thumbnail" type="button" data-carousel-dot aria-label="렌더링 데모 영상" title="렌더링 데모 영상" aria-current="true"><img src="../../assets/media/tinyrenderer-poster.webp" alt="" width="1600" height="900" loading="lazy"><span class="thumbnail-play" aria-hidden="true">▶</span></button>
+              <button class="media-thumbnail" type="button" data-carousel-dot aria-label="BVH 시각화 영상" title="BVH 시각화 영상"><img src="../../assets/media/tinyrenderer-bvh-build-poster.webp" alt="" width="1600" height="900" loading="lazy"><span class="thumbnail-play" aria-hidden="true">▶</span></button>
+            </div>
+            <button class="carousel-control" type="button" data-carousel-next aria-label="다음 미디어" title="다음 미디어"><span aria-hidden="true">→</span></button>
+            <span class="gallery-counter" data-carousel-counter aria-live="polite">01 / 02</span>
+          </div>
+        </div>
+        <dl class="solver-facts">
+          <div><dt>구조와 인터페이스</dt><dd>파일 포맷별 데이터를 엔진 공통 형식으로 변환해 렌더링 코드와 분리했습니다. Vulkan 확장을 고려해 그래픽스 API 호출도 별도의 인터페이스(RHI)로 분리했습니다.</dd></div>
+          <div><dt>자원 수명과 동기화</dt><dd>데이터 업로드와 렌더링 작업을 동기화하고, CPU에서 해제를 요청한 자원은 해당 GPU 작업의 완료를 확인한 뒤 회수하도록 구성했습니다.</dd></div>
+          <div><dt>공간 구조와 컬링</dt><dd>BVH로 장면의 공간 구조를 관리하고 Frustum·HZB 컬링으로 그릴 대상을 줄였습니다. 컬링 결과 시각화와 렌더링 단계별 GPU 시간 측정으로 동작을 확인했습니다.</dd></div>
+        </dl>
+        <div class="solver-links">
+          <a href="../../projects/realtime-rendering-engine/index.html?focus=solver#architecture">데이터 구조와 렌더링 경로</a>
+          <a href="../../projects/realtime-rendering-engine/index.html?focus=solver#gpu-resource-lifetime">GPU 자원 회수</a>
+        </div>
+      </article>
+
+      <article class="solver-project" id="minirt">
+        <header><h3>miniRT · 광선 추적 렌더러</h3><p class="solver-meta">C · 기하 연산 · k-d Tree · 42 Seoul</p></header>
+        <p>광선과 구·평면·원기둥의 교차를 계산해 픽셀 색상을 구합니다. k-d tree로 공간을 나누고 경계 상자(AABB)와 먼저 교차 검사해, 광선이 지나가는 영역의 물체를 검사하도록 했습니다.</p>
+        <a href="../../projects/minirt/index.html?focus=solver#implementation-title">교차 계산과 공간 분할</a>
+      </article>
+
+      <article class="solver-project" id="fdf">
+        <header><h3>FdF · 높이 데이터의 시각화</h3><p class="solver-meta">C · 좌표 변환 · 선 그리기 · 42 Seoul</p></header>
+        <p>격자 위치와 높이 데이터를 3차원 좌표로 구성하고, 회전·확대·투영을 거쳐 와이어프레임으로 표현했습니다. 화면의 선과 색상을 픽셀 단위로 계산했습니다.</p>
+        <figure class="solver-figure solver-figure-small">
+          <a href="../../assets/media/fdf-scene-02.webp" target="_blank" rel="noreferrer" title="원본 이미지 보기">
+            <img src="../../assets/media/fdf-scene-02.webp" alt="격자 높이 데이터를 선으로 연결한 FdF 지형" width="1600" height="1110" loading="lazy" decoding="async">
+          </a>
+          <figcaption>높이 데이터의 와이어프레임 표현</figcaption>
+        </figure>
+        <a href="../../projects/fdf/index.html?focus=solver#implementation-title">좌표 변환과 선 그리기</a>
+      </article>
+    </section>
+
+    <section class="solver-section" id="foundation" aria-labelledby="foundation-title">
+      <h2 id="foundation-title">C/C++ 개발 기반</h2>
+      <p>42 Seoul의 개인·팀 프로젝트에서 프로그램을 구현하고 디버깅하며 메모리 관리, 자료구조, 스레드 동기화와 소켓 통신을 다뤘습니다.</p>
+      <dl class="solver-facts">
+        <div><dt>스레드 동기화</dt><dd>Philosophers에서 식사하는 철학자 문제를 C로 구현했습니다. POSIX 스레드와 뮤텍스로 공유 자원에 대한 접근을 제어했습니다. <a href="https://github.com/BeomJinNa/42cursus/tree/main/common_core/circle3_Philosophers/philo" target="_blank" rel="noreferrer">Philosophers 소스</a></dd></div>
+        <div><dt>소켓 통신</dt><dd>C++로 IRC 채팅 서버를 구현한 5인 팀 프로젝트에서 소켓 통신과 사용자·채팅방 관리를 주로 담당했습니다. <a href="https://github.com/BeomJinNa/42cursus/tree/main/common_core/circle5_ft_irc" target="_blank" rel="noreferrer">ft_irc 소스</a></dd></div>
+      </dl>
+    </section>
+
+  </main>
+  <footer class="solver-footer solver-width"><span>Beomjin Na</span><a href="https://github.com/BeomJinNa" target="_blank" rel="noreferrer">GitHub</a></footer>
+</body>
+</html>
