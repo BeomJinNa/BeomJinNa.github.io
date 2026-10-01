@@ -27,6 +27,26 @@
 .minirt-media img { aspect-ratio: 400 / 283; }
 .fdf-media video { aspect-ratio: 82 / 59; }
 
+.project-evidence { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 24px; }
+.project-evidence a { color: var(--teal-dark); font-size: .85rem; font-weight: 600; overflow-wrap: anywhere; }
+.focus-demo { margin: 0; }
+.focus-demo video { aspect-ratio: 16 / 9; object-fit: contain; background: var(--media); }
+.focus-demo figcaption { padding: 10px 14px; border-top: 1px solid var(--line); color: var(--muted); background: var(--paper); font-size: .76rem; }
+.implementation-points { margin: 24px 0 0; }
+.implementation-points > div { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 24px; padding-block: 14px; border-top: 1px solid var(--line); font-size: .91rem; }
+.implementation-points dt { font-weight: 650; }
+.implementation-points dd { margin: 0; color: var(--muted); word-break: keep-all; overflow-wrap: anywhere; }
+.project-subtitle { display: inline-block; margin-left: 8px; color: var(--muted); font-size: .95rem; font-weight: 400; }
+.focus-cpp .project-intro { margin-bottom: 0; }
+.focus-cpp .focus-demo { margin-top: 24px; }
+.supporting-projects { padding-block: 32px 40px; border-top: 1px solid var(--line); scroll-margin-top: 24px; }
+.supporting-projects > h2 { margin: 0 0 24px; font-size: 1.25rem; }
+.supporting-project { display: grid; grid-template-columns: 200px minmax(0, 1fr); align-items: center; gap: 28px; padding-block: 24px; border-top: 1px solid var(--line); scroll-margin-top: 24px; }
+.supporting-image { display: block; }
+.supporting-image img { width: 100%; height: auto; aspect-ratio: 16 / 11; object-fit: contain; background: var(--paper); }
+.supporting-project h3 { margin: 0 0 10px; font-size: 1.1rem; }
+.supporting-project p { margin: 0 0 14px; font-size: .91rem; }
+
 .directory-width { width: min(calc(100% - 48px), 860px); margin-inline: auto; }
 .directory-topbar { display: flex; justify-content: space-between; gap: 24px; padding-block: 28px; border-bottom: 1px solid var(--line); font-size: .8rem; }
 .directory-name { font-weight: 700; text-decoration: none; }
@@ -98,6 +118,10 @@
 .carousel-dots button[aria-current="true"]::after { background: var(--teal); }
 
 @media (max-width: 760px) {
+  .implementation-points > div { grid-template-columns: 1fr; gap: 6px; }
+  .supporting-project { grid-template-columns: 1fr; gap: 18px; }
+  .supporting-image { max-width: 320px; }
+  .project-subtitle { display: block; margin: 8px 0 0; }
   .focus-page .site-rail { grid-template-columns: minmax(0, 1fr) auto; }
   .focus-page .rail-links { grid-column: 2; grid-row: 1; }
   .focus-page .site-nav { grid-column: 1 / -1; grid-row: 2; margin-top: 0; flex-wrap: wrap; gap: 12px 24px; overflow: visible; }

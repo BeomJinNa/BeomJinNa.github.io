@@ -6,7 +6,8 @@ if (document.body.classList.contains("directory-page") &&
 
 // Shared project pages return to the explicit entry focus, never a saved session.
 const focusRoutes = new Map([
-  ["cpp", { path: "focus/cpp/index.html", label: "C++ Portfolio" }],
+  ["cpp", { path: "focus/cpp/index.html", label: "C++ 개발 포트폴리오" }],
+  ["graphics", { path: "focus/graphics/index.html", label: "렌더링·그래픽스 포트폴리오" }],
   ["solver", { path: "focus/solver/index.html", label: "개발 포트폴리오" }],
 ]);
 const entryFocus = focusRoutes.get(new URLSearchParams(window.location.search).get("focus"));
